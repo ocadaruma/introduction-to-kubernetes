@@ -1,0 +1,27 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: example-app-deployment
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+      - name: example-app
+        image: example/example:v1.0-SNAPSHOT
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SERVER_PORT
+          value: "3000"
+        - name: DB_URL
+          value: "jdbc:mysql://mysql-service:3306/example?characterEncoding=utf8"
+        - name: DB_USER_NAME
+          value: "test_user"
+        - name: DB_USER_PASSWORD
+          value: ""
