@@ -30,13 +30,11 @@ enablePlugins(SbtTwirl, DockerPlugin)
 dockerfile in docker := {
   val artifact: File = assembly.value
   val artifactTargetPath = s"/app/${artifact.name}"
-  val serverPort = 3000
 
   new Dockerfile {
     from("java:8-jre-alpine")
     add(artifact, artifactTargetPath)
-    expose(serverPort)
-    entryPoint("java", "-jar", artifactTargetPath, "0.0.0.0", serverPort.toString)
+    entryPoint("java", "-jar", artifactTargetPath)
   }
 }
 

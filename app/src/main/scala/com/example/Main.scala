@@ -5,6 +5,7 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.example.dao.PostTableImpl
 import com.example.service.PostService
+import com.typesafe.config.ConfigFactory
 import scalikejdbc.config.DBs
 
 object Main {
@@ -14,10 +15,12 @@ object Main {
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
 
+    val serverPort = ConfigFactory.load().getInt("serverPort")
+
     DBs.setup()
 
     val route = new Route(new PostService(PostTableImpl))
 
-    Http().bindAndHandle(route.route, "0.0.0.0", 3000)
+    Http().bindAndHandle(route.route, "0.0.0.0", serverPort)
   }
 }
