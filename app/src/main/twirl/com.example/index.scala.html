@@ -1,0 +1,51 @@
+@import com.example.model.Post
+@(posts: Seq[Post])
+
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>example</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.1/css/bulma.min.css">
+    </head>
+    <body>
+        <section class="section">
+            <div class="container">
+                <form action="/post" method="post">
+                    <label class="label">Title</label>
+                    <p class="control">
+                        <input class="input" type="text" name="title" placeholder="title">
+                    </p>
+
+                    <label class="label">Content</label>
+                    <p class="control">
+                        <textarea class="textarea" name="content" placeholder="content"></textarea>
+                    </p>
+
+                    <p class="control">
+                        <button class="button is-primary">Submit</button>
+                    </p>
+                </form>
+            </div>
+
+            <div class="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><abbr title="Title">Title</abbr></th>
+                            <th><abbr title="Content">Content</abbr></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(post <- posts) {
+                            <tr>
+                                <td>@post.title</td>
+                                <td>@post.content</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </body>
+</html>
