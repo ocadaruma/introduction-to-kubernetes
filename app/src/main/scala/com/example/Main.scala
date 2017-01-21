@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.example.dao.PostTableImpl
-import com.example.service.PostService
+import com.example.service.{HealthCheckServiceImpl, PostService}
 import com.typesafe.config.ConfigFactory
 import scalikejdbc.config.DBs
 
@@ -19,8 +19,16 @@ object Main {
 
     DBs.setup()
 
-    val route = new Route(new PostService(PostTableImpl))
+    val postService = new PostService(PostTableImpl)
+    val healthCheckService = HealthCheckServiceImpl
+
+    val route = new Route(postService, healthCheckService)
 
     Http().bindAndHandle(route.route, "0.0.0.0", serverPort)
+
+    sys.addShutdownHook {
+      healthCheckService.makeUnhealthy()
+      Thread.sleep(3000L) // wait to close connections gracefully.
+    }
   }
 }

@@ -25,3 +25,9 @@ spec:
           value: "test_user"
         - name: DB_USER_PASSWORD
           value: ""
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 3
+          periodSeconds: 1

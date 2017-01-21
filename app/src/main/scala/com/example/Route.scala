@@ -1,13 +1,13 @@
 package com.example
 
-import akka.http.scaladsl.model.{HttpEntity, ContentTypes}
+import akka.http.scaladsl.model.{StatusCodes, HttpEntity, ContentTypes}
 import akka.http.scaladsl.server.{Directive1, Directives}
 import com.example.model.Post
-import com.example.service.PostService
+import com.example.service.{Health, HealthCheckService, PostService}
 
 import scala.concurrent.Future
 
-class Route(postService: PostService) extends Directives {
+class Route(postService: PostService, healthCheckService: HealthCheckService) extends Directives {
 
   private[this] def fetchPosts: Directive1[Seq[Post]] = {
     import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,6 +36,11 @@ class Route(postService: PostService) extends Directives {
       }
     } ~ get {
       fetchPosts(index)
+    }
+  } ~ path("health") {
+    healthCheckService.health() match {
+      case Health.Healthy => complete("ok")
+      case Health.Unhealthy => complete(StatusCodes.ServiceUnavailable)
     }
   }
 }
